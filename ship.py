@@ -68,6 +68,6 @@ class Ship():
         # 从上边进去，下边出来
         if self.move_up and self.rect.top >= self.screen_rect.bottom:
             self.center_y = self.screen_rect.top
-        # 从下边进去，上边出来/Users/guozihan/Documents/FirstGame/ship.py
+        # 从下边进去，上边出来
         if self.move_down and self.rect.bottom <= self.screen_rect.top:
             self.center_y = self.screen_rect.bottom 
