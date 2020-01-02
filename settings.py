@@ -12,10 +12,16 @@ class Settings():
 
         # 子弹的一些参数配置
         # 子弹的飞行速度要大于飞船的速度
-        self.bullet_speed_factor = 2.5
+        self.bullet_speed_factor = 3
         self.bullet_width = 3
         self.bullet_height = 9
         self.bullet_color = 60, 60, 60
         self.bullets_allowed = 3
     
-
+        # 外星人的移动速度
+        self.alien_speed_factor = 1
+        # 向下外星人群移动速度
+        self.fleet_drop_speed = 10
+        # 表示外星人自动移动的方向 1 right -1 left
+        self.fleet_direction = 1
+        self.ship_limit = 3

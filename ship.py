@@ -71,3 +71,8 @@ class Ship():
         # 从下边进去，上边出来
         if self.move_down and self.rect.bottom <= self.screen_rect.top:
             self.center_y = self.screen_rect.bottom 
+    
+    def center_ship(self):
+        """ 初始化飞船的位置 """
+        self.center_x = self.screen_rect.centerx
+        self.center_y = self.screen_rect.bottom - 20
