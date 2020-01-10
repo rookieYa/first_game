@@ -4,8 +4,8 @@ class GameState():
     def __init__(self, ai_settings):
         """ 初始化统计信息 """
         self.ai_settings = ai_settings
-        # 游戏刚启动时为活跃状态，只有剩下的飞船大于0的时候才有效
-        self.game_active = True
+        # 游戏刚启动时为活跃状态，只有剩下的飞船大于0的时候才有效,手动触发游戏
+        self.game_active = False
         self.reset_state()
     
     def reset_state(self):
