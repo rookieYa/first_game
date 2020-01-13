@@ -11,3 +11,5 @@ class GameState():
     def reset_state(self):
         """ 初始化游戏运行期间，可能变化的统计信息 """
         self.ships_left = self.ai_settings.ship_limit
+        # 初始化分数
+        self.score = 0

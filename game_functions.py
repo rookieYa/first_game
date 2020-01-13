@@ -29,6 +29,7 @@ def check_play_button(ai_settings, screen, aliens, bullets, ship, stats, play_bu
         if button_clicked and not stats.game_active:
             # 隐藏 鼠标的光标
             pygame.mouse.set_visible(False)
+            ai_settings.initialize_dynamic_settings()
             start_game(stats, ai_settings, screen, aliens, bullets, ship)
 
 
@@ -51,6 +52,7 @@ def check_down_events(event, ai_settings, screen, ship, bullets, stats, aliens):
     elif event.key == pygame.K_p:
         # 按下P的时候进行开始游戏
         if not stats.game_active:
+            ai_settings.initialize_dynamic_settings()
             start_game(stats, ai_settings, screen, aliens, bullets, ship)
 
 
@@ -106,6 +108,7 @@ def check_bullets_aliens_collections(bullets, aliens, ai_settings, screen, ship)
     if len(aliens) == 0:
         # 清空所有子弹，然后新建一群外星人
         bullets.empty()
+        ai_settings.increase_speed()
         create_fleet(ai_settings, screen, ship, aliens)
 
 
