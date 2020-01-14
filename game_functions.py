@@ -76,7 +76,7 @@ def check_up_events(event, ship):
         ship.move_up = False
 
 
-def update_screen(ai_settings, screen, ship, aliens, bullets, stats, play_button):
+def update_screen(ai_settings, screen, ship, aliens, bullets, stats, play_button, sb):
     """ 进行屏幕的更新"""
     screen.fill(ai_settings.bg_color)
     # 把子弹画出来
@@ -84,12 +84,14 @@ def update_screen(ai_settings, screen, ship, aliens, bullets, stats, play_button
         bullet.draw_bullet()
     ship.blitme()
     aliens.draw(screen)
+    # 绘制得分版
+    sb.show_score()
     if not stats.game_active:
         play_button.draw_button()
     pygame.display.flip()
 
 
-def update_bullets(ai_settings, screen, ship, bullets, aliens):
+def update_bullets(ai_settings, screen, ship, bullets, aliens, stats, sb):
     """  更新子弹的位置，并删除已经消失的子弹 """
     bullets.update()
     # 进行内存回收
@@ -97,13 +99,18 @@ def update_bullets(ai_settings, screen, ship, bullets, aliens):
         # 消失在屏幕外之后
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
-    check_bullets_aliens_collections(bullets, aliens, ai_settings, screen, ship)
+    check_bullets_aliens_collections(bullets, aliens, ai_settings, screen, ship, stats, sb)
 
 
-def check_bullets_aliens_collections(bullets, aliens, ai_settings, screen, ship):
+def check_bullets_aliens_collections(bullets, aliens, ai_settings, screen, ship, stats, sb):
     """ 检查子弹和外星人的碰撞 """
     # 检查碰撞，碰撞成功之后进行消除
     collections = pygame.sprite.groupcollide(bullets, aliens, True, True)
+    # 进行分数的加减操作
+    if collections:
+        for aliens in collections.values():
+            stats.score += ai_settings.alien_score * len(aliens)
+            sb.prep_score()
     # 此时外星人已经被全部消灭
     if len(aliens) == 0:
         # 清空所有子弹，然后新建一群外星人

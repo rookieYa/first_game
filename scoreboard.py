@@ -21,4 +21,12 @@ class ScoreBoard():
     def prep_score(self):
         """ 进行 文字组件的渲染 """
         score_str = str(self.stats.score)
-        self.score_msg = self.font.render(score_str, True, self.text_color, self.ai_settings.bg_color)
+        self.score_img = self.font.render(score_str, True, self.text_color, self.ai_settings.bg_color)
+        # 找到放得分版的位置
+        self.score_rect = self.score_img.get_rect()
+        self.score_rect.right = self.screen_rect.right - 20
+        self.score_rect.top = 20
+    
+    def show_score(self):
+        """ 在屏幕上显示得分"""
+        self.screen.blit(self.score_img, self.score_rect)

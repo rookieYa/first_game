@@ -36,6 +36,8 @@ class Settings():
         self.alien_speed_factor = 1
         # 修改方向 1 为 右，-1表示左
         self.fleet_direction = 1
+        # 初始化 杀一个外星人给50分
+        self.alien_score = 50    
 
     def increase_speed(self):
         """ 速度提起来 """
