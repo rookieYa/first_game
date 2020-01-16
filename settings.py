@@ -28,6 +28,8 @@ class Settings():
 
         # 更新游戏反应速度
         self.speedup_scale = 1.1
+        # 速度提升后给予的分数
+        self.score_scale = 1.5
     
     def initialize_dynamic_settings(self):
         """ 进行配置的动态修改 """
@@ -44,4 +46,5 @@ class Settings():
         self.ship_speed_factor *= self.speedup_scale
         self.bullet_speed_factor *= self.speedup_scale
         self.alien_speed_factor *= self.speedup_scale
+        self.alien_score = int(self.alien_score * self.score_scale)
         

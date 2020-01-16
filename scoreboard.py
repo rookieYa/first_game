@@ -20,7 +20,8 @@ class ScoreBoard():
     
     def prep_score(self):
         """ 进行 文字组件的渲染 """
-        score_str = str(self.stats.score)
+        score_str = round(self.stats.score, -1)
+        score_str = "{:,}".format(score_str)
         self.score_img = self.font.render(score_str, True, self.text_color, self.ai_settings.bg_color)
         # 找到放得分版的位置
         self.score_rect = self.score_img.get_rect()
