@@ -111,6 +111,7 @@ def check_bullets_aliens_collections(bullets, aliens, ai_settings, screen, ship,
         for aliens in collections.values():
             stats.score += ai_settings.alien_score * len(aliens)
             sb.prep_score()
+        check_high_score(stats, sb)
     # 此时外星人已经被全部消灭
     if len(aliens) == 0:
         # 清空所有子弹，然后新建一群外星人
@@ -119,18 +120,18 @@ def check_bullets_aliens_collections(bullets, aliens, ai_settings, screen, ship,
         create_fleet(ai_settings, screen, ship, aliens)
 
 
-def update_aliens(ai_settings, ship, aliens, stats, screen, bullets):
+def update_aliens(ai_settings, ship, aliens, stats, screen, bullets, sb):
     """ 更新外星人的位置 """
     check_fleet_edges(ai_settings, aliens)
     aliens.update()
     # 检测外星人和飞船之间的碰撞
     if pygame.sprite.spritecollideany(ship, aliens):
-        ship_boom(ai_settings, stats, screen, ship, aliens, bullets)
+        ship_boom(ai_settings, stats, screen, ship, aliens, bullets, sb)
     # 外星人是不是到家了
-    check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets)
+    check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets, sb)
 
 
-def ship_boom(ai_settings, stats, screen, ship, aliens, bullets):
+def ship_boom(ai_settings, stats, screen, ship, aliens, bullets, sb):
     """ 飞船被击毙的时候 """
     if stats.ships_left > 0:
         stats.ships_left -= 1
@@ -140,6 +141,8 @@ def ship_boom(ai_settings, stats, screen, ship, aliens, bullets):
     else:
         # 暂停
         sleep(0.5)
+        stats.reset_state()
+        sb.prep_score()
         stats.game_active = False
         pygame.mouse.set_visible(True)
 
@@ -224,12 +227,18 @@ def change_fleet_direction(ai_settings, aliens):
     ai_settings.fleet_direction *= -1
 
 
-def check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets):
+def check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets, sb):
     """ 检查外星人群是不是到达了底部 """
     screen_rect = screen.get_rect()
     for alien in aliens.sprites():
         if alien.rect.bottom >= screen_rect.bottom:
             # 同样的重新开始游戏
-            ship_boom(ai_settings, stats, screen, ship, aliens, bullets)
+            ship_boom(ai_settings, stats, screen, ship, aliens, bullets, sb)
             break
-    
+
+
+def check_high_score(stats, sb):
+    """ 查看是不是诞生了最高分 """
+    if stats.score > stats.high_score:
+        stats.high_score = stats.score
+        sb.prep_high_score()
