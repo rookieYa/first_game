@@ -6,22 +6,22 @@ from time import sleep
 import pygame
 
 
-def check_events(ai_settings, screen, aliens, stats, play_button, ship, bullets):
+def check_events(ai_settings, screen, aliens, stats, play_button, ship, bullets, sb):
     """ 响应外部监听事件的 """
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            check_down_events(event, ai_settings, screen, ship, bullets, stats, aliens)
+            check_down_events(event, ai_settings, screen, ship, bullets, stats, aliens, sb)
         elif event.type == pygame.KEYUP:
             check_up_events(event, ship)
         # 监控鼠标的输入
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            check_play_button(ai_settings, screen, aliens, bullets, ship, stats, play_button, mouse_x, mouse_y)
+            check_play_button(ai_settings, screen, aliens, bullets, ship, stats, play_button, mouse_x, mouse_y, sb)
 
 
-def check_play_button(ai_settings, screen, aliens, bullets, ship, stats, play_button, mouse_x, mouse_y):
+def check_play_button(ai_settings, screen, aliens, bullets, ship, stats, play_button, mouse_x, mouse_y, sb):
     """ 在玩家单机play按钮的时候开始游戏"""
     if play_button.rect.collidepoint(mouse_x, mouse_y):
         # 防止不停的刷新
@@ -30,10 +30,10 @@ def check_play_button(ai_settings, screen, aliens, bullets, ship, stats, play_bu
             # 隐藏 鼠标的光标
             pygame.mouse.set_visible(False)
             ai_settings.initialize_dynamic_settings()
-            start_game(stats, ai_settings, screen, aliens, bullets, ship)
+            start_game(stats, ai_settings, screen, aliens, bullets, ship, sb)
 
 
-def check_down_events(event, ai_settings, screen, ship, bullets, stats, aliens):
+def check_down_events(event, ai_settings, screen, ship, bullets, stats, aliens, sb):
     """ 检查按键向下按 """
     if event.key == pygame.K_RIGHT:
         ship.move_right = True
@@ -53,15 +53,15 @@ def check_down_events(event, ai_settings, screen, ship, bullets, stats, aliens):
         # 按下P的时候进行开始游戏
         if not stats.game_active:
             ai_settings.initialize_dynamic_settings()
-            start_game(stats, ai_settings, screen, aliens, bullets, ship)
+            start_game(stats, ai_settings, screen, aliens, bullets, ship, sb)
 
 
-def start_game(stats, ai_settings, screen, aliens, bullets, ship):
+def start_game(stats, ai_settings, screen, aliens, bullets, ship, sb):
     """ 开始游戏 """
     stats.reset_state()
     stats.game_active = True
     # 进行屏幕的初始化
-    screen_init(ai_settings, screen, aliens, bullets, ship)
+    screen_init(ai_settings, screen, aliens, bullets, ship, sb)
 
 
 def check_up_events(event, ship):
@@ -117,6 +117,9 @@ def check_bullets_aliens_collections(bullets, aliens, ai_settings, screen, ship,
         # 清空所有子弹，然后新建一群外星人
         bullets.empty()
         ai_settings.increase_speed()
+        # 增加游戏难度
+        stats.level += 1
+        sb.prep_level()
         create_fleet(ai_settings, screen, ship, aliens)
 
 
@@ -135,7 +138,8 @@ def ship_boom(ai_settings, stats, screen, ship, aliens, bullets, sb):
     """ 飞船被击毙的时候 """
     if stats.ships_left > 0:
         stats.ships_left -= 1
-        screen_init(ai_settings, screen, aliens, bullets, ship)
+        # 更新记分牌
+        screen_init(ai_settings, screen, aliens, bullets, ship, sb)
         # 暂停
         sleep(0.5)
     else:
@@ -147,8 +151,13 @@ def ship_boom(ai_settings, stats, screen, ship, aliens, bullets, sb):
         pygame.mouse.set_visible(True)
 
 
-def screen_init(ai_settings, screen, aliens, bullets, ship):
+def screen_init(ai_settings, screen, aliens, bullets, ship, sb):
     """ 进行屏幕的数据的初始化 """
+    # 重制记分牌
+    sb.prep_score()
+    sb.prep_high_score()
+    sb.prep_level()
+    sb.prep_ships()
     # 清屏
     aliens.empty()
     bullets.empty()
